@@ -234,6 +234,29 @@ def daterange(start: date, end: date) -> Iterable[date]:
         current += timedelta(days=1)
 
 
+def last_day_of_month(d: date) -> date:
+    next_month = date(d.year + (d.month // 12), (d.month % 12) + 1, 1)
+    return next_month - timedelta(days=1)
+
+
+def expand_monthly(ev: EventRow, poly_index: int, geometry: dict) -> List[Interval]:
+    intervals: List[Interval] = []
+    # Iterate by calendar months across the range
+    current_month_day = date(ev.start_date.year, ev.start_date.month, 1)
+    end_guard = date(ev.end_date.year, ev.end_date.month, 1)
+    # Ensure current starts at start month
+    while current_month_day <= end_guard:
+        month_start = max(ev.start_date, date(current_month_day.year, current_month_day.month, 1))
+        month_end = min(ev.end_date, last_day_of_month(current_month_day))
+        if month_start <= month_end:
+            start_dt = datetime.combine(month_start, time(0, 0, 0), tzinfo=ev.timezone)
+            end_dt   = datetime.combine(month_end,   time(23, 59, 59), tzinfo=ev.timezone)
+            intervals.append(Interval(ev.polygon_name, poly_index, start_dt, end_dt, geometry))
+        # advance to next month
+        current_month_day = date(current_month_day.year + (current_month_day.month // 12), ((current_month_day.month % 12) + 1), 1)
+    return intervals
+
+
 def expand_event_to_intervals(ev: EventRow, name_to_feature: Dict[str, Tuple[int, dict]]) -> List[Interval]:
     key = normalize_name(ev.polygon_name)
     idx_feat = name_to_feature.get(key)
@@ -260,6 +283,9 @@ def expand_event_to_intervals(ev: EventRow, name_to_feature: Dict[str, Tuple[int
     intervals: List[Interval] = []
     rep = ev.repetition
 
+    # Provider override: if Daily and all controls empty, run MONTHLY instead of daily
+    controls_empty = (ev.start_time is None and ev.end_time is None and len(ev.specific_days) == 0 and not ev.overnight_flag)
+
     if rep == "Once":
         for d in daterange(ev.start_date, ev.end_date):
             s, e = build_daily_interval(d)
@@ -267,6 +293,8 @@ def expand_event_to_intervals(ev: EventRow, name_to_feature: Dict[str, Tuple[int
         return intervals
 
     if rep == "Daily":
+        if controls_empty:
+            return expand_monthly(ev, poly_index, geometry)
         for d in daterange(ev.start_date, ev.end_date):
             s, e = build_daily_interval(d)
             intervals.append(Interval(ev.polygon_name, poly_index, s, e, geometry))
