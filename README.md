@@ -21,6 +21,15 @@ Overpass (OSM) approach (works reliably, may be incomplete vs official):
 python d1_overpass.py --output d1_osm
 ```
 
+Use Google Maps Geocoding to fill or override lat/lng:
+
+```bash
+# Export GOOGLE_API_KEY or pass --google-api-key
+export GOOGLE_API_KEY=YOUR_KEY
+python d1_overpass.py --output d1_osm --force-google --google-rate 0.1 --cache /workspace/d1_geocode_cache.json
+```
+Fields include a `source` column indicating `osm` or `google` for coordinates.
+
 Website scraper (may be blocked by protections):
 
 ```bash
