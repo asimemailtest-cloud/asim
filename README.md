@@ -1,5 +1,5 @@
-Tiendas D1 Stores Scraper (Colombia)
-====================================
+Tiendas D1 Stores Exporter (Colombia)
+=====================================
 
 Quick script to export Tiendas D1 store locations to JSON and CSV.
 
@@ -15,43 +15,46 @@ pip install -r requirements.txt
 Usage
 -----
 
-Overpass (OSM) approach (works reliably, may be incomplete vs official):
+Unified script
+--------------
+
+OSM approach (may be incomplete vs official):
 
 ```bash
-python d1_overpass.py --output d1_osm
+python d1_stores.py osm --output d1_osm
 ```
 
-Use Google Maps Geocoding to fill or override lat/lng:
+Use Google Maps Geocoding to fill or override lat/lng on OSM data:
 
 ```bash
 # Export GOOGLE_API_KEY or pass --google-api-key
 export GOOGLE_API_KEY=YOUR_KEY
-python d1_overpass.py --output d1_osm --force-google --google-rate 0.1 --cache /workspace/d1_geocode_cache.json
+python d1_stores.py osm --output d1_osm --force-google --google-rate 0.1 --cache /workspace/d1_geocode_cache.json
 ```
 Fields include a `source` column indicating `osm` or `google` for coordinates.
 
 Website scraper (may be blocked by protections):
 
 ```bash
-python d1_scraper.py --output d1_stores --base-url https://d1.com.co --verbose
+python d1_stores.py web --output d1_web --base-url https://d1.com.co --verbose
 ```
 
-Website scraper with headless browser:
+Website scraper with headless browser (if needed):
 
 ```bash
 ~/.local/bin/playwright install --with-deps chromium
-python d1_scraper.py --output d1_stores --base-url https://d1.com.co --browser --verbose
+python d1_stores.py web --output d1_web --base-url https://d1.com.co --browser --verbose
 ```
 
 If you can open the site in your browser and pass the challenge, copy your Cookie header from the Network tab and pass it to the scraper to reuse your session:
 
 ```bash
-python d1_scraper.py --output d1_stores --base-url https://d1.com.co --cookie "<paste your Cookie header>" --verbose
+python d1_stores.py web --output d1_web --base-url https://d1.com.co --cookie "<paste your Cookie header>" --verbose
 ```
 
 Outputs:
-- `d1_stores.json`
-- `d1_stores.csv`
+- `d1_osm.json` / `d1_osm.csv` (OSM path)
+- `d1_web.json` / `d1_web.csv` (website path)
 
 Notes
 -----
