@@ -1,5 +1,505 @@
 #!/usr/bin/env python3
 """
+Scrape Tiendas D1 store locations in Colombia.
+
+This script attempts multiple known WordPress Store Locator endpoints and a
+fallback that extracts a WP Store Locator nonce from a locator page when needed.
+
+Outputs both JSON and CSV with a normalized schema.
+
+Usage:
+  python d1_scraper.py --output stores --base-url https://d1.com.co
+
+Dependencies are listed in requirements.txt.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import random
+import re
+import sys
+import time
+from dataclasses import dataclass, asdict
+from typing import Any, Dict, Iterable, List, Optional, Tuple
+
+
+def _print_verbose(verbose: bool, message: str) -> None:
+    if verbose:
+        print(message, file=sys.stderr)
+
+
+def create_scraper(verbose: bool = False):
+    """
+    Create a Cloudflare-aware HTTP client.
+    """
+    try:
+        import cloudscraper  # type: ignore
+    except Exception as exc:
+        print(
+            "cloudscraper is required. Please run: pip install -r requirements.txt",
+            file=sys.stderr,
+        )
+        raise
+
+    # Vary the browser profile to improve chances of passing anti-bot checks
+    browser_profiles = [
+        ("chrome", "121"),
+        ("firefox", "120"),
+        ("safari", "17"),
+    ]
+    browser, version = random.choice(browser_profiles)
+    scraper = cloudscraper.create_scraper(
+        browser={"browser": browser, "platform": "windows", "mobile": False, "desktop": True},
+        delay=random.uniform(0.5, 1.5),
+    )
+    # Set a common Accept-Language and DNT to look more like a browser
+    scraper.headers.update(
+        {
+            "User-Agent": scraper.headers.get(
+                "User-Agent",
+                f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) {browser.capitalize()}/{version} Safari/537.36",
+            ),
+            "Accept-Language": "es-CO,es;q=0.9,en;q=0.8",
+            "DNT": "1",
+        }
+    )
+    _print_verbose(verbose, f"Initialized scraper with UA: {scraper.headers.get('User-Agent')}")
+    return scraper
+
+
+@dataclass
+class Store:
+    id: Optional[str]
+    name: Optional[str]
+    address: Optional[str]
+    city: Optional[str]
+    state: Optional[str]
+    country: Optional[str]
+    latitude: Optional[float]
+    longitude: Optional[float]
+    phone: Optional[str]
+    hours: Optional[str]
+
+
+def _to_float(value: Any) -> Optional[float]:
+    try:
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return float(value)
+        # Remove non-numeric characters except dot and minus
+        cleaned = re.sub(r"[^0-9\.-]", "", str(value))
+        if cleaned in ("", ".", "-"):
+            return None
+        return float(cleaned)
+    except Exception:
+        return None
+
+
+def normalize_store(record: Dict[str, Any]) -> Store:
+    """
+    Normalize various known shapes from WP Store Locator and similar plugins.
+    """
+    # Common keys seen in WP Store Locator JSON
+    name = (
+        record.get("title")
+        or record.get("name")
+        or (record.get("store") or {}).get("name")
+    )
+    address = (
+        record.get("address")
+        or (record.get("store") or {}).get("address")
+        or record.get("street")
+        or record.get("direccion")
+    )
+    city = record.get("city") or record.get("ciudad")
+    state = record.get("state") or record.get("departamento") or record.get("province")
+    country = record.get("country") or record.get("pais") or "Colombia"
+
+    latitude = (
+        _to_float(record.get("lat"))
+        or _to_float(record.get("latitude"))
+        or _to_float((record.get("store") or {}).get("lat"))
+    )
+    longitude = (
+        _to_float(record.get("lng"))
+        or _to_float(record.get("lon"))
+        or _to_float(record.get("longitude"))
+        or _to_float((record.get("store") or {}).get("lng"))
+    )
+
+    phone = record.get("phone") or record.get("telefono") or record.get("tel")
+    hours = record.get("hours") or record.get("horario") or record.get("opening_hours")
+
+    # Try several id fields
+    id_value = (
+        record.get("id")
+        or (record.get("store") or {}).get("id")
+        or record.get("post_id")
+        or record.get("slug")
+    )
+
+    return Store(
+        id=str(id_value) if id_value is not None else None,
+        name=str(name) if name is not None else None,
+        address=str(address) if address is not None else None,
+        city=str(city) if city is not None else None,
+        state=str(state) if state is not None else None,
+        country=str(country) if country is not None else None,
+        latitude=latitude,
+        longitude=longitude,
+        phone=str(phone) if phone is not None else None,
+        hours=str(hours) if hours is not None else None,
+    )
+
+
+def try_fetch_json(scraper, url: str, verbose: bool) -> Optional[Any]:
+    _print_verbose(verbose, f"GET {url}")
+    try:
+        response = scraper.get(url, timeout=30)
+        if response.status_code != 200:
+            _print_verbose(verbose, f"Non-200 response: {response.status_code}")
+            return None
+        # Some endpoints may respond with text/html due to challenges; filter that
+        content_type = response.headers.get("Content-Type", "").lower()
+        if "application/json" not in content_type and not response.text.strip().startswith("[") and not response.text.strip().startswith("{"):
+            _print_verbose(verbose, f"Unexpected content type: {content_type}")
+            return None
+        return response.json()
+    except Exception as exc:
+        _print_verbose(verbose, f"Request failed: {exc}")
+        return None
+
+
+def attempt_wp_store_locator_endpoints(base_url: str, scraper, verbose: bool) -> Optional[List[Dict[str, Any]]]:
+    """
+    Try a series of common WP Store Locator REST endpoints.
+    """
+    candidates = [
+        f"{base_url.rstrip('/')}/wp-json/wp-store-locator/v1/locations?per_page=10000",
+        f"{base_url.rstrip('/')}/wp-json/wpsl/v1/locations?per_page=10000",
+        f"{base_url.rstrip('/')}/wp-json/wp/v2/wpsl_stores?per_page=10000",
+        f"{base_url.rstrip('/')}/wp-json/wp/v2/wpsl_store?per_page=10000",
+        f"{base_url.rstrip('/')}/wp-json/wpsl/v1/stores?per_page=10000",
+    ]
+    for url in candidates:
+        data = try_fetch_json(scraper, url, verbose)
+        if isinstance(data, list) and len(data) > 0:
+            _print_verbose(verbose, f"Found {len(data)} stores via {url}")
+            return data
+        if isinstance(data, dict) and any(k in data for k in ("stores", "locations")):
+            stores = data.get("stores") or data.get("locations")
+            if isinstance(stores, list) and stores:
+                _print_verbose(verbose, f"Found {len(stores)} stores via {url}")
+                return stores
+    return None
+
+
+def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[Dict[str, Any]]]:
+    """
+    Use Playwright (headless Chromium) to load the site, bypass Cloudflare, and
+    extract a WPSL nonce or intercept requests to admin-ajax.php to obtain stores.
+    Returns raw store dicts if successful.
+    """
+    try:
+        from playwright.sync_api import sync_playwright  # type: ignore
+    except Exception:
+        _print_verbose(verbose, "Playwright not installed. Run: pip install playwright && playwright install chromium")
+        return None
+
+    last_ajax_response: Optional[Any] = None
+    ajax_url_suffix = "/wp-admin/admin-ajax.php"
+
+    def handle_response(response):
+        nonlocal last_ajax_response
+        try:
+            url = response.url
+            if ajax_url_suffix in url and response.status == 200:
+                ct = (response.headers.get("content-type") or "").lower()
+                if "json" in ct:
+                    data = response.json()
+                    if isinstance(data, dict):
+                        stores = data.get("stores") or data.get("results") or data.get("locations")
+                        if isinstance(stores, list) and stores:
+                            last_ajax_response = stores
+                    elif isinstance(data, list) and data:
+                        last_ajax_response = data
+        except Exception:
+            pass
+
+    likely_pages = [
+        "",
+        "/tiendas",
+        "/nuestras-tiendas",
+        "/encuentra-tu-tienda",
+        "/tiendas-disponibles",
+        "/store-locator",
+        "/donde-estamos",
+        "/ubicaciones",
+    ]
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(locale="es-CO")
+        page = context.new_page()
+        page.on("response", handle_response)
+
+        # Navigate to likely pages to trigger store loading
+        for path in likely_pages:
+            url = f"{base_url.rstrip('/')}{path}"
+            _print_verbose(verbose, f"[browser] goto {url}")
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                # Give scripts time to run and possibly fetch stores
+                page.wait_for_timeout(4000)
+                # Attempt to read nonce from JS variables
+                nonce = None
+                try:
+                    nonce = page.evaluate("window.wpsl_locator_vars && window.wpsl_locator_vars.nonce || null")
+                except Exception:
+                    pass
+                if not nonce:
+                    try:
+                        nonce = page.evaluate("window.wpslLocator && window.wpslLocator.nonce || null")
+                    except Exception:
+                        pass
+                if nonce and not last_ajax_response:
+                    # Call admin-ajax via the page context to reuse CF tokens/cookies
+                    bbox = "-4.231687,-81.858139;13.527,-66.869835"
+                    ajax_url = f"{base_url.rstrip('/')}{ajax_url_suffix}?action=wpsl_load_stores&nonce={nonce}&bounds={bbox}&max_results=10000&fields=id,title,address,city,state,zip,lat,lng,country,phone,hours"
+                    _print_verbose(verbose, f"[browser] fetch {ajax_url}")
+                    try:
+                        page.evaluate(
+                            "(url) => fetch(url, {credentials: 'include'}).then(r => r.json()).then(x => window.__stores = x).catch(() => null)",
+                            ajax_url,
+                        )
+                        page.wait_for_timeout(2500)
+                        data = page.evaluate("window.__stores || null")
+                        if isinstance(data, dict):
+                            stores = data.get("stores") or data.get("results") or data.get("locations")
+                            if isinstance(stores, list) and stores:
+                                last_ajax_response = stores
+                        elif isinstance(data, list) and data:
+                            last_ajax_response = data
+                    except Exception:
+                        pass
+
+                if last_ajax_response:
+                    break
+            except Exception:
+                continue
+
+        browser.close()
+    return last_ajax_response
+
+
+def extract_wpsl_nonce(html: str) -> Optional[str]:
+    """
+    Extract the WP Store Locator nonce from inline JS variables.
+    Common variable: wpsl_locator_vars.nonce or wpslLocator.nonce
+    """
+    patterns = [
+        r"wpsl_locator_vars\s*=\s*\{[\s\S]*?\bnonce\b\s*:\s*['\"]([^'\"]+)['\"]",
+        r"wpslLocator\s*=\s*\{[\s\S]*?\bnonce\b\s*:\s*['\"]([^'\"]+)['\"]",
+        r"\bnonce\b\s*:\s*['\"]([^'\"]+)['\"]\s*,\s*\bnonce_field\b",
+    ]
+    for pat in patterns:
+        m = re.search(pat, html, flags=re.IGNORECASE)
+        if m:
+            return m.group(1)
+    return None
+
+
+def attempt_admin_ajax(base_url: str, scraper, verbose: bool) -> Optional[List[Dict[str, Any]]]:
+    """
+    Attempt to load stores via WP admin-ajax action used by WP Store Locator.
+    Requires discovering a nonce from a likely locator page.
+    """
+    likely_pages = [
+        "",  # homepage might include scripts with nonce
+        "/tiendas",
+        "/nuestras-tiendas",
+        "/encuentra-tu-tienda",
+        "/tiendas-disponibles",
+        "/store-locator",
+        "/donde-estamos",
+        "/ubicaciones",
+    ]
+
+    nonce: Optional[str] = None
+    for path in likely_pages:
+        url = f"{base_url.rstrip('/')}{path}"
+        _print_verbose(verbose, f"Probing page for nonce: {url}")
+        try:
+            r = scraper.get(url, timeout=30)
+            if r.status_code != 200:
+                continue
+            candidate = extract_wpsl_nonce(r.text)
+            if candidate:
+                nonce = candidate
+                _print_verbose(verbose, f"Found nonce on {url}")
+                break
+        except Exception:
+            continue
+
+    if not nonce:
+        _print_verbose(verbose, "No nonce discovered for admin-ajax.")
+        return None
+
+    ajax_url = f"{base_url.rstrip('/')}/wp-admin/admin-ajax.php"
+    params = {
+        "action": "wpsl_load_stores",
+        "nonce": nonce,
+        # Broad bounding box covering all of Colombia to return all stores
+        "bounds": "-4.231687,-81.858139;13.527, -66.869835",
+        "fields": "id,title,address,city,state,zip,lat,lng,country,phone,hours",
+        "max_results": 10000,
+    }
+    _print_verbose(verbose, f"Calling admin-ajax with nonce {nonce}")
+    try:
+        resp = scraper.get(ajax_url, params=params, timeout=60)
+        if resp.status_code != 200:
+            _print_verbose(verbose, f"Admin-ajax non-200: {resp.status_code}")
+            return None
+        data = resp.json()
+        if isinstance(data, dict):
+            stores = data.get("stores") or data.get("results") or data.get("locations")
+            if isinstance(stores, list) and stores:
+                _print_verbose(verbose, f"Found {len(stores)} stores via admin-ajax")
+                return stores
+        if isinstance(data, list) and data:
+            _print_verbose(verbose, f"Found {len(data)} stores via admin-ajax (list root)")
+            return data
+        return None
+    except Exception as exc:
+        _print_verbose(verbose, f"Admin-ajax failed: {exc}")
+        return None
+
+
+def fetch_d1_stores(base_url: str, verbose: bool = False) -> List[Store]:
+    scraper = create_scraper(verbose=verbose)
+
+    # First try known REST endpoints
+    stores_raw = attempt_wp_store_locator_endpoints(base_url, scraper, verbose)
+    if not stores_raw:
+        # Try admin-ajax with discovered nonce
+        stores_raw = attempt_admin_ajax(base_url, scraper, verbose)
+
+    if not stores_raw:
+        # Optional: Try a headless browser fallback via Playwright if installed
+        try:
+            browser_stores = playwright_fallback(base_url, verbose)
+            if browser_stores:
+                stores_raw = browser_stores
+        except Exception as exc:
+            _print_verbose(verbose, f"Playwright fallback failed: {exc}")
+
+    if not stores_raw:
+        raise RuntimeError(
+            "Failed to retrieve stores. Site may be blocking automated access. "
+            "Try re-running with --verbose, using --browser mode, or a different network."
+        )
+
+    normalized: List[Store] = []
+    for rec in stores_raw:
+        try:
+            normalized.append(normalize_store(rec))
+        except Exception:
+            # Skip malformed entries
+            continue
+    # Deduplicate by (name, address, latitude, longitude)
+    seen: set[Tuple[Optional[str], Optional[str], Optional[float], Optional[float]]] = set()
+    unique: List[Store] = []
+    for s in normalized:
+        key = (s.name, s.address, s.latitude, s.longitude)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(s)
+    return unique
+
+
+def write_json(stores: List[Store], path: str) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump([asdict(s) for s in stores], f, ensure_ascii=False, indent=2)
+
+
+def write_csv(stores: List[Store], path: str) -> None:
+    fieldnames = [
+        "id",
+        "name",
+        "address",
+        "city",
+        "state",
+        "country",
+        "latitude",
+        "longitude",
+        "phone",
+        "hours",
+    ]
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for s in stores:
+            writer.writerow(asdict(s))
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Scrape Tiendas D1 stores in Colombia")
+    parser.add_argument(
+        "--base-url",
+        default="https://d1.com.co",
+        help="Base URL of the D1 website",
+    )
+    parser.add_argument(
+        "--output",
+        default="d1_stores",
+        help="Output file base name without extension (JSON and CSV will be created)",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose logging",
+    )
+    parser.add_argument(
+        "--browser",
+        action="store_true",
+        help="Force using a headless browser (Playwright) fallback",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    args = parse_args(argv)
+    try:
+        if args.browser:
+            # Attempt browser mode directly
+            stores_raw = playwright_fallback(args.base_url, args.verbose)
+            if not stores_raw:
+                raise RuntimeError("Browser mode failed to retrieve stores")
+            stores = [normalize_store(r) for r in stores_raw]
+        else:
+            stores = fetch_d1_stores(args["base_url"] if isinstance(args, dict) else args.base_url, verbose=args.verbose)
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    json_path = f"{args.output}.json"
+    csv_path = f"{args.output}.csv"
+    write_json(stores, json_path)
+    write_csv(stores, csv_path)
+    print(f"Saved {len(stores)} stores to {json_path} and {csv_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+#!/usr/bin/env python3
+"""
 Scrape D1 stores in Colombia.
 
 Primary strategy: crawl a stable directory site that lists Tiendas D1 stores
