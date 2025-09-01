@@ -198,7 +198,39 @@ def attempt_wp_store_locator_endpoints(base_url: str, scraper, verbose: bool) ->
     return None
 
 
-def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[Dict[str, Any]]]:
+def _is_store_like(obj: Any) -> bool:
+    if not isinstance(obj, dict):
+        return False
+    keys = set(k.lower() for k in obj.keys())
+    required_any = [
+        {"lat", "lng"},
+        {"latitude", "longitude"},
+        {"address", "city"},
+        {"direccion", "ciudad"},
+    ]
+    return any(req.issubset(keys) for req in required_any)
+
+
+def _extract_store_candidates(payload: Any) -> List[Dict[str, Any]]:
+    results: List[Dict[str, Any]] = []
+    try:
+        if isinstance(payload, list):
+            for item in payload:
+                if _is_store_like(item):
+                    results.append(item)
+        elif isinstance(payload, dict):
+            for key in ("stores", "locations", "results", "data"):
+                val = payload.get(key)
+                if isinstance(val, list):
+                    for item in val:
+                        if _is_store_like(item):
+                            results.append(item)
+    except Exception:
+        pass
+    return results
+
+
+def playwright_fallback(base_url: str, verbose: bool = False, cookie: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
     """
     Use Playwright (headless Chromium) to load the site, bypass Cloudflare, and
     extract a WPSL nonce or intercept requests to admin-ajax.php to obtain stores.
@@ -211,6 +243,8 @@ def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[D
         return None
 
     last_ajax_response: Optional[Any] = None
+    discovered: List[Dict[str, Any]] = []
+    debug_lines: List[str] = []
     ajax_url_suffix = "/wp-admin/admin-ajax.php"
 
     def handle_response(response):
@@ -227,6 +261,27 @@ def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[D
                             last_ajax_response = stores
                     elif isinstance(data, list) and data:
                         last_ajax_response = data
+            # Heuristic capture of any JSON that looks like stores
+            ct_any = (response.headers.get("content-type") or "").lower()
+            if "json" in ct_any and response.status == 200:
+                try:
+                    body = response.text()
+                except Exception:
+                    body = None
+                try:
+                    payload = response.json()
+                except Exception:
+                    payload = None
+                if payload is not None:
+                    candidates = _extract_store_candidates(payload)
+                    if candidates:
+                        discovered.extend(candidates)
+                # Save debug jsonl line
+                try:
+                    if body is not None:
+                        debug_lines.append(json.dumps({"url": url, "status": response.status, "body": body[:20000]}, ensure_ascii=False))
+                except Exception:
+                    pass
         except Exception:
             pass
 
@@ -239,11 +294,33 @@ def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[D
         "/store-locator",
         "/donde-estamos",
         "/ubicaciones",
+        "/encuentra-tu-tienda/",
+        "/tiendas/",
+        "/tiendas-disponibles/",
     ]
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(locale="es-CO")
+        # If user provided raw cookie header, set it for the base domain
+        if cookie:
+            try:
+                # Parse base domain
+                from urllib.parse import urlparse
+                parsed = urlparse(base_url)
+                domain = parsed.hostname or "d1.com.co"
+                # Split cookie pairs and set as individual cookies
+                cookie_pairs = [c.strip() for c in cookie.split(";") if c.strip()]
+                cookies = []
+                for pair in cookie_pairs:
+                    if "=" not in pair:
+                        continue
+                    name, value = pair.split("=", 1)
+                    cookies.append({"name": name.strip(), "value": value.strip(), "domain": domain, "path": "/"})
+                if cookies:
+                    context.add_cookies(cookies)
+            except Exception:
+                pass
         page = context.new_page()
         page.on("response", handle_response)
 
@@ -255,6 +332,12 @@ def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[D
                 page.goto(url, wait_until="domcontentloaded", timeout=60000)
                 # Give scripts time to run and possibly fetch stores
                 page.wait_for_timeout(4000)
+                # Scroll to trigger lazy loads
+                try:
+                    page.evaluate("() => window.scrollTo(0, document.body.scrollHeight)")
+                    page.wait_for_timeout(2000)
+                except Exception:
+                    pass
                 # Attempt to read nonce from JS variables
                 nonce = None
                 try:
@@ -293,7 +376,20 @@ def playwright_fallback(base_url: str, verbose: bool = False) -> Optional[List[D
                 continue
 
         browser.close()
-    return last_ajax_response
+    # Write debug JSONL if any
+    try:
+        if debug_lines:
+            with open("/workspace/d1_network_debug.jsonl", "w", encoding="utf-8") as f:
+                for line in debug_lines:
+                    f.write(line + "\n")
+    except Exception:
+        pass
+
+    if last_ajax_response:
+        return last_ajax_response
+    if discovered:
+        return discovered
+    return None
 
 
 def extract_wpsl_nonce(html: str) -> Optional[str]:
@@ -379,8 +475,10 @@ def attempt_admin_ajax(base_url: str, scraper, verbose: bool) -> Optional[List[D
         return None
 
 
-def fetch_d1_stores(base_url: str, verbose: bool = False) -> List[Store]:
+def fetch_d1_stores(base_url: str, verbose: bool = False, cookie: Optional[str] = None) -> List[Store]:
     scraper = create_scraper(verbose=verbose)
+    if cookie:
+        scraper.headers.update({"Cookie": cookie})
 
     # First try known REST endpoints
     stores_raw = attempt_wp_store_locator_endpoints(base_url, scraper, verbose)
@@ -391,7 +489,7 @@ def fetch_d1_stores(base_url: str, verbose: bool = False) -> List[Store]:
     if not stores_raw:
         # Optional: Try a headless browser fallback via Playwright if installed
         try:
-            browser_stores = playwright_fallback(base_url, verbose)
+            browser_stores = playwright_fallback(base_url, verbose, cookie)
             if browser_stores:
                 stores_raw = browser_stores
         except Exception as exc:
@@ -469,6 +567,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         action="store_true",
         help="Force using a headless browser (Playwright) fallback",
     )
+    parser.add_argument(
+        "--cookie",
+        default=None,
+        help="Optional raw Cookie header string copied from a real browser session",
+    )
     return parser.parse_args(argv)
 
 
@@ -477,12 +580,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         if args.browser:
             # Attempt browser mode directly
-            stores_raw = playwright_fallback(args.base_url, args.verbose)
+            stores_raw = playwright_fallback(args.base_url, args.verbose, args.cookie)
             if not stores_raw:
                 raise RuntimeError("Browser mode failed to retrieve stores")
             stores = [normalize_store(r) for r in stores_raw]
         else:
-            stores = fetch_d1_stores(args["base_url"] if isinstance(args, dict) else args.base_url, verbose=args.verbose)
+            stores = fetch_d1_stores(
+                args["base_url"] if isinstance(args, dict) else args.base_url,
+                verbose=args.verbose,
+                cookie=(args.get("cookie") if isinstance(args, dict) else args.cookie),
+            )
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1

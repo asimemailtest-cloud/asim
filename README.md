@@ -15,8 +15,29 @@ pip install -r requirements.txt
 Usage
 -----
 
+Overpass (OSM) approach (works reliably, may be incomplete vs official):
+
+```bash
+python d1_overpass.py --output d1_osm
+```
+
+Website scraper (may be blocked by protections):
+
 ```bash
 python d1_scraper.py --output d1_stores --base-url https://d1.com.co --verbose
+```
+
+Website scraper with headless browser:
+
+```bash
+~/.local/bin/playwright install --with-deps chromium
+python d1_scraper.py --output d1_stores --base-url https://d1.com.co --browser --verbose
+```
+
+If you can open the site in your browser and pass the challenge, copy your Cookie header from the Network tab and pass it to the scraper to reuse your session:
+
+```bash
+python d1_scraper.py --output d1_stores --base-url https://d1.com.co --cookie "<paste your Cookie header>" --verbose
 ```
 
 Outputs:
@@ -26,6 +47,6 @@ Outputs:
 Notes
 -----
 - The site is protected by Cloudflare. The script uses `cloudscraper` to mimic a real browser.
-- If requests are blocked, wait a few minutes and try again, or use a different network.
+- If requests are blocked, wait a few minutes and try again, or use a different network. You can also pass your `--cookie` from a real browser session.
 - Only for lawful and approved use. Respect the website's terms.
 

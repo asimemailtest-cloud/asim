@@ -4572,6 +4572,18 @@
     "longitude": -75.5724642
   },
   {
+    "osm_type": "node",
+    "osm_id": 13112978404,
+    "name": "D1",
+    "brand": "D1",
+    "address": null,
+    "city": null,
+    "state": null,
+    "country": "CO",
+    "latitude": 2.4373349,
+    "longitude": -76.61595
+  },
+  {
     "osm_type": "way",
     "osm_id": 268046220,
     "name": "Tiendas D1 - Filandia",
