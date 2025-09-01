@@ -85,6 +85,69 @@ class PoliteSession:
                 time.sleep(min(2.0 * attempt, 5.0))
 
 
+class NominatimGeocoder:
+    def __init__(self, email: str = "", delay_seconds: float = 1.1, timeout_seconds: float = 20.0, max_retries: int = 3):
+        self.session = requests.Session()
+        ua = USER_AGENT
+        if email:
+            ua = f"{USER_AGENT} (contact: {email})"
+        self.session.headers.update({"User-Agent": ua})
+        self.delay = delay_seconds
+        self.timeout = timeout_seconds
+        self.max_retries = max_retries
+        self._last_request_ts = 0.0
+        self.cache: Dict[str, Tuple[Optional[float], Optional[float]]] = {}
+
+    def _respect_rate_limit(self):
+        sleep_for = max(0.0, self.delay - (time.time() - self._last_request_ts))
+        if sleep_for > 0:
+            time.sleep(sleep_for)
+
+    def geocode_query(self, query: str, email: str = "") -> Tuple[Optional[float], Optional[float]]:
+        if not query:
+            return None, None
+        key = query.strip().lower()
+        if key in self.cache:
+            return self.cache[key]
+
+        self._respect_rate_limit()
+        params = {
+            "q": query,
+            "format": "jsonv2",
+            "limit": 1,
+            "addressdetails": 0,
+            "countrycodes": "co",
+        }
+        if email:
+            params["email"] = email
+        url = "https://nominatim.openstreetmap.org/search"
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                resp = self.session.get(url, params=params, timeout=self.timeout)
+                self._last_request_ts = time.time()
+                if resp.status_code >= 500:
+                    raise requests.HTTPError(f"Server error {resp.status_code}")
+                data = resp.json()
+                if isinstance(data, list) and data:
+                    lat = float(data[0]["lat"]) if "lat" in data[0] else None
+                    lon = float(data[0]["lon"]) if "lon" in data[0] else None
+                    self.cache[key] = (lat, lon)
+                    return lat, lon
+                self.cache[key] = (None, None)
+                return None, None
+            except Exception:
+                if attempt >= self.max_retries:
+                    self.cache[key] = (None, None)
+                    return None, None
+                time.sleep(min(2.0 * attempt, 5.0))
+
+    def geocode_store(self, s: Store, email: str = "") -> Tuple[Optional[float], Optional[float]]:
+        # Compose a robust query: address + city + department + country
+        parts = [p for p in [s.address, s.city, s.department, "Colombia"] if p]
+        query = ", ".join(parts)
+        return self.geocode_query(query, email=email)
+
+
 def extract_links(base_url: str, html: str) -> List[str]:
     soup = BeautifulSoup(html, "html.parser")
     links: List[str] = []
@@ -348,6 +411,10 @@ def main():
     ap.add_argument("--output", required=True, help="Output CSV path")
     ap.add_argument("--geojson", default="", help="Optional output GeoJSON path")
     ap.add_argument("--delay", type=float, default=0.8, help="Delay between requests (seconds)")
+    ap.add_argument("--geocode-missing", action="store_true", help="Use Nominatim to geocode stores missing coordinates")
+    ap.add_argument("--nominatim-email", default="", help="Contact email for Nominatim usage policy")
+    ap.add_argument("--geocode-limit", type=int, default=1000, help="Max number of geocoding requests")
+    ap.add_argument("--geocode-cache", default="", help="Optional JSON cache file path for geocoding results")
     ap.add_argument("--max-pages", type=int, default=5000, help="Max pages to crawl")
     args = ap.parse_args()
 
@@ -361,6 +428,47 @@ def main():
 
     if not filtered:
         print("No stores parsed. Try increasing --max-pages or adjusting selectors.", file=sys.stderr)
+
+    # Optional geocoding for missing coordinates
+    if args.geocode_missing and filtered:
+        cache: Dict[str, Tuple[Optional[float], Optional[float]]] = {}
+        if args.geocode_cache:
+            try:
+                with open(args.geocode_cache, "r", encoding="utf-8") as f:
+                    loaded = json.load(f)
+                    if isinstance(loaded, dict):
+                        for k, v in loaded.items():
+                            if isinstance(v, list) and len(v) == 2:
+                                try:
+                                    cache[k] = (float(v[0]) if v[0] is not None else None, float(v[1]) if v[1] is not None else None)
+                                except Exception:
+                                    pass
+            except FileNotFoundError:
+                pass
+            except Exception:
+                pass
+
+        geocoder = NominatimGeocoder(email=args.nominatim_email)
+        geocoder.cache.update(cache)
+
+        requests_made = 0
+        for s in filtered:
+            if s.latitude is not None and s.longitude is not None:
+                continue
+            if requests_made >= args.geocode_limit:
+                break
+            lat, lon = geocoder.geocode_store(s, email=args.nominatim_email)
+            if lat is not None and lon is not None:
+                s.latitude, s.longitude = lat, lon
+            requests_made += 1
+
+        # Persist cache if requested
+        if args.geocode_cache:
+            try:
+                with open(args.geocode_cache, "w", encoding="utf-8") as f:
+                    json.dump(geocoder.cache, f, ensure_ascii=False)
+            except Exception:
+                pass
 
     write_csv(args.output, filtered)
     if args.geojson:
