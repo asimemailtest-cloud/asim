@@ -188,49 +188,63 @@ def find_column_key(row_keys: List[str], wanted: str) -> Optional[str]:
 def detect_company_name(brand: str, model: str) -> str:
     """Detect company/brand name from model and/or brand value.
 
-    - If brand value is present, prefer it.
-    - Else, infer from model using regex heuristics.
+    Priority: infer from model first to satisfy mappings like:
+      - "iPhone 13" -> "iphone"
+      - "SM-S908E"  -> "samsung"
+    Fallback: use broader heuristics on combined brand+model, then original brand.
+    Output is lowercased.
     """
     original_brand = (brand or "").strip()
-    if original_brand:
-        return original_brand
 
-    text = normalize_text(model)
+    model_norm = normalize_text(model)
+    combo_norm = normalize_text(f"{brand} {model}")
+
+    # Strong model-first rules
+    if "iphone" in model_norm:
+        return "iphone"
+    if re.search(r"\bsm[-_ ]?[a-z0-9]+\b", model_norm) or "galaxy" in model_norm:
+        return "samsung"
+
+    # General patterns on combined string
     patterns: List[Tuple[str, re.Pattern]] = [
-        ("Apple", re.compile(r"\b(apple|iphone|ipad|ipod|watch)\b", re.IGNORECASE)),
-        ("Samsung", re.compile(r"\b(samsung|galaxy|sm[-_ ]?\w+)\b", re.IGNORECASE)),
-        ("Google", re.compile(r"\b(google|pixel)\b", re.IGNORECASE)),
-        ("Motorola", re.compile(r"\b(motorola|moto\s|moto$|xt\d{3,4}|razr)\b", re.IGNORECASE)),
-        ("OnePlus", re.compile(r"\b(oneplus)\b", re.IGNORECASE)),
-        ("Xiaomi", re.compile(r"\b(xiaomi|mi\s|mi-|redmi|poco)\b", re.IGNORECASE)),
-        ("OPPO", re.compile(r"\b(oppo|cph\d{3,5})\b", re.IGNORECASE)),
+        ("iphone", re.compile(r"\b(apple|iphone)\b", re.IGNORECASE)),
+        ("samsung", re.compile(r"\b(samsung|galaxy|sm[-_ ]?\w+)\b", re.IGNORECASE)),
+        ("google", re.compile(r"\b(google|pixel)\b", re.IGNORECASE)),
+        ("motorola", re.compile(r"\b(motorola|moto\s|moto$|xt\d{3,4}|razr)\b", re.IGNORECASE)),
+        ("oneplus", re.compile(r"\b(oneplus)\b", re.IGNORECASE)),
+        ("xiaomi", re.compile(r"\b(xiaomi|mi\s|mi-|redmi|poco)\b", re.IGNORECASE)),
+        ("oppo", re.compile(r"\b(oppo|cph\d{3,5})\b", re.IGNORECASE)),
         ("realme", re.compile(r"\b(realme|rmx\d{3,5})\b", re.IGNORECASE)),
         ("vivo", re.compile(r"\b(vivo)\b", re.IGNORECASE)),
-        ("HUAWEI", re.compile(r"\b(huawei|mate\s|p\d{2}\b)\b", re.IGNORECASE)),
-        ("Honor", re.compile(r"\b(honor)\b", re.IGNORECASE)),
-        ("Nokia", re.compile(r"\b(nokia)\b", re.IGNORECASE)),
-        ("Sony", re.compile(r"\b(sony|xperia)\b", re.IGNORECASE)),
-        ("LG", re.compile(r"\b(lg|lm-\w+)\b", re.IGNORECASE)),
-        ("ASUS", re.compile(r"\b(asus|zenfone|rog\s*phone)\b", re.IGNORECASE)),
-        ("Lenovo", re.compile(r"\b(lenovo)\b", re.IGNORECASE)),
-        ("ZTE", re.compile(r"\b(zte|nubia)\b", re.IGNORECASE)),
-        ("TCL", re.compile(r"\b(tcl)\b", re.IGNORECASE)),
-        ("Alcatel", re.compile(r"\b(alcatel)\b", re.IGNORECASE)),
-        ("Nothing", re.compile(r"\b(nothing\s*phone)\b", re.IGNORECASE)),
-        ("Fairphone", re.compile(r"\b(fairphone)\b", re.IGNORECASE)),
-        ("Palm", re.compile(r"\b(palm)\b", re.IGNORECASE)),
-        ("CAT", re.compile(r"\b(cat(\s*phone)?|caterpillar)\b", re.IGNORECASE)),
-        ("Infinix", re.compile(r"\b(infinix)\b", re.IGNORECASE)),
-        ("TECNO", re.compile(r"\b(tecno)\b", re.IGNORECASE)),
-        ("Wiko", re.compile(r"\b(wiko)\b", re.IGNORECASE)),
-        ("Meizu", re.compile(r"\b(meizu)\b", re.IGNORECASE)),
-        ("BlackBerry", re.compile(r"\b(blackberry)\b", re.IGNORECASE)),
-        ("Blackview", re.compile(r"\b(blackview)\b", re.IGNORECASE)),
-        ("BLU", re.compile(r"\b(\bblu\b)\b", re.IGNORECASE)),
+        ("huawei", re.compile(r"\b(huawei|mate\s|p\d{2}\b)\b", re.IGNORECASE)),
+        ("honor", re.compile(r"\b(honor)\b", re.IGNORECASE)),
+        ("nokia", re.compile(r"\b(nokia)\b", re.IGNORECASE)),
+        ("sony", re.compile(r"\b(sony|xperia)\b", re.IGNORECASE)),
+        ("lg", re.compile(r"\b(lg|lm-\w+)\b", re.IGNORECASE)),
+        ("asus", re.compile(r"\b(asus|zenfone|rog\s*phone)\b", re.IGNORECASE)),
+        ("lenovo", re.compile(r"\b(lenovo)\b", re.IGNORECASE)),
+        ("zte", re.compile(r"\b(zte|nubia)\b", re.IGNORECASE)),
+        ("tcl", re.compile(r"\b(tcl)\b", re.IGNORECASE)),
+        ("alcatel", re.compile(r"\b(alcatel)\b", re.IGNORECASE)),
+        ("nothing", re.compile(r"\b(nothing\s*phone)\b", re.IGNORECASE)),
+        ("fairphone", re.compile(r"\b(fairphone)\b", re.IGNORECASE)),
+        ("palm", re.compile(r"\b(palm)\b", re.IGNORECASE)),
+        ("cat", re.compile(r"\b(cat(\s*phone)?|caterpillar)\b", re.IGNORECASE)),
+        ("infinix", re.compile(r"\b(infinix)\b", re.IGNORECASE)),
+        ("tecno", re.compile(r"\b(tecno)\b", re.IGNORECASE)),
+        ("wiko", re.compile(r"\b(wiko)\b", re.IGNORECASE)),
+        ("meizu", re.compile(r"\b(meizu)\b", re.IGNORECASE)),
+        ("blackberry", re.compile(r"\b(blackberry)\b", re.IGNORECASE)),
+        ("blackview", re.compile(r"\b(blackview)\b", re.IGNORECASE)),
+        ("blu", re.compile(r"\b(\bblu\b)\b", re.IGNORECASE)),
     ]
     for brand_name, rgx in patterns:
-        if rgx.search(text):
+        if rgx.search(combo_norm):
             return brand_name
+
+    # Final fallback: original brand lowercased
+    if original_brand:
+        return original_brand.strip().lower()
     return ""
 
 
