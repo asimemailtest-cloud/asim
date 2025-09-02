@@ -185,6 +185,55 @@ def find_column_key(row_keys: List[str], wanted: str) -> Optional[str]:
     return None
 
 
+def detect_company_name(brand: str, model: str) -> str:
+    """Detect company/brand name from model and/or brand value.
+
+    - If brand value is present, prefer it.
+    - Else, infer from model using regex heuristics.
+    """
+    original_brand = (brand or "").strip()
+    if original_brand:
+        return original_brand
+
+    text = normalize_text(model)
+    patterns: List[Tuple[str, re.Pattern]] = [
+        ("Apple", re.compile(r"\b(apple|iphone|ipad|ipod|watch)\b", re.IGNORECASE)),
+        ("Samsung", re.compile(r"\b(samsung|galaxy|sm[-_ ]?\w+)\b", re.IGNORECASE)),
+        ("Google", re.compile(r"\b(google|pixel)\b", re.IGNORECASE)),
+        ("Motorola", re.compile(r"\b(motorola|moto\s|moto$|xt\d{3,4}|razr)\b", re.IGNORECASE)),
+        ("OnePlus", re.compile(r"\b(oneplus)\b", re.IGNORECASE)),
+        ("Xiaomi", re.compile(r"\b(xiaomi|mi\s|mi-|redmi|poco)\b", re.IGNORECASE)),
+        ("OPPO", re.compile(r"\b(oppo|cph\d{3,5})\b", re.IGNORECASE)),
+        ("realme", re.compile(r"\b(realme|rmx\d{3,5})\b", re.IGNORECASE)),
+        ("vivo", re.compile(r"\b(vivo)\b", re.IGNORECASE)),
+        ("HUAWEI", re.compile(r"\b(huawei|mate\s|p\d{2}\b)\b", re.IGNORECASE)),
+        ("Honor", re.compile(r"\b(honor)\b", re.IGNORECASE)),
+        ("Nokia", re.compile(r"\b(nokia)\b", re.IGNORECASE)),
+        ("Sony", re.compile(r"\b(sony|xperia)\b", re.IGNORECASE)),
+        ("LG", re.compile(r"\b(lg|lm-\w+)\b", re.IGNORECASE)),
+        ("ASUS", re.compile(r"\b(asus|zenfone|rog\s*phone)\b", re.IGNORECASE)),
+        ("Lenovo", re.compile(r"\b(lenovo)\b", re.IGNORECASE)),
+        ("ZTE", re.compile(r"\b(zte|nubia)\b", re.IGNORECASE)),
+        ("TCL", re.compile(r"\b(tcl)\b", re.IGNORECASE)),
+        ("Alcatel", re.compile(r"\b(alcatel)\b", re.IGNORECASE)),
+        ("Nothing", re.compile(r"\b(nothing\s*phone)\b", re.IGNORECASE)),
+        ("Fairphone", re.compile(r"\b(fairphone)\b", re.IGNORECASE)),
+        ("Palm", re.compile(r"\b(palm)\b", re.IGNORECASE)),
+        ("CAT", re.compile(r"\b(cat(\s*phone)?|caterpillar)\b", re.IGNORECASE)),
+        ("Infinix", re.compile(r"\b(infinix)\b", re.IGNORECASE)),
+        ("TECNO", re.compile(r"\b(tecno)\b", re.IGNORECASE)),
+        ("Wiko", re.compile(r"\b(wiko)\b", re.IGNORECASE)),
+        ("Meizu", re.compile(r"\b(meizu)\b", re.IGNORECASE)),
+        ("BlackBerry", re.compile(r"\b(blackberry)\b", re.IGNORECASE)),
+        ("Blackview", re.compile(r"\b(blackview)\b", re.IGNORECASE)),
+        ("BLU", re.compile(r"\b(\bblu\b)\b", re.IGNORECASE)),
+    ]
+    for brand_name, rgx in patterns:
+        if rgx.search(text):
+            return brand_name
+    return ""
+
+
 def main():
     ap = argparse.ArgumentParser(description="Add eSIM compatibility column to CSV based on model/brand")
     ap.add_argument("--input", required=True, help="Input CSV path")
@@ -196,6 +245,7 @@ def main():
     ap.add_argument("--no-pattern", action="append", default=[], help="Regex to force No (repeatable)")
     ap.add_argument("--pattern-file", default="", help="JSON file with {yes:[], no:[]} regex lists")
     ap.add_argument("--column-name", default="esim_compatible", help="Name of the output column to add")
+    ap.add_argument("--company-column", default="company", help="Name of the output brand/company column to add")
     args = ap.parse_args()
 
     yes_patterns: List[str] = list(args.yes_pattern or [])
@@ -240,6 +290,8 @@ def main():
         out_fieldnames = list(fieldnames)
         if args.column_name not in out_fieldnames:
             out_fieldnames.append(args.column_name)
+        if args.company_column not in out_fieldnames:
+            out_fieldnames.append(args.company_column)
         writer = csv.DictWriter(f_out, fieldnames=out_fieldnames)
         writer.writeheader()
 
@@ -262,6 +314,10 @@ def main():
                 else:
                     row[args.column_name] = "Unknown"
                     unknown_count += 1
+
+            # Company/brand detection
+            detected = detect_company_name(str(brand_val), str(model_val))
+            row[args.company_column] = detected
 
             writer.writerow(row)
 
