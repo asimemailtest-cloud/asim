@@ -44,26 +44,44 @@ def build_overpass_query() -> str:
     [out:json][timeout:300];
     area["ISO3166-1"="CO"][admin_level=2]->.co;
     (
-      // Supermarkets with brand or name mentioning D1 (looser regex)
-      node["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
-      node["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
-      way ["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
-      way ["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
-      relation["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
-      relation["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
+      node["shop"="supermarket"]["brand"~"d\s*1", i](area.co);
+      node["shop"="supermarket"]["name"~"\bd\s*1\b", i](area.co);
+      way ["shop"="supermarket"]["brand"~"d\s*1", i](area.co);
+      way ["shop"="supermarket"]["name"~"\bd\s*1\b", i](area.co);
+      relation["shop"="supermarket"]["brand"~"d\s*1", i](area.co);
+      relation["shop"="supermarket"]["name"~"\bd\s*1\b", i](area.co);
 
-      // Some data might be tagged with operator
-      node["operator"~"(?i)koba"](area.co);
-      way ["operator"~"(?i)koba"](area.co);
-      relation["operator"~"(?i)koba"](area.co);
+      node["operator"~"koba", i](area.co);
+      way ["operator"~"koba", i](area.co);
+      relation["operator"~"koba", i](area.co);
 
-      // Occasionally tagged as convenience instead of supermarket
-      node["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
-      way ["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
-      relation["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
+      node["shop"="convenience"]["name"~"\bd\s*1\b", i](area.co);
+      way ["shop"="convenience"]["name"~"\bd\s*1\b", i](area.co);
+      relation["shop"="convenience"]["name"~"\bd\s*1\b", i](area.co);
     );
     out center tags;
     """
+
+
+def build_overpass_query_bbox(south: float, west: float, north: float, east: float) -> str:
+    return (
+        "[out:json][timeout:180];\n"
+        "(\n"
+        f"  node[\"shop\"=\"supermarket\"][\"brand\"~\"d\\s*1\", i]({south},{west},{north},{east});\n"
+        f"  node[\"shop\"=\"supermarket\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        f"  way [\"shop\"=\"supermarket\"][\"brand\"~\"d\\s*1\", i]({south},{west},{north},{east});\n"
+        f"  way [\"shop\"=\"supermarket\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        f"  relation[\"shop\"=\"supermarket\"][\"brand\"~\"d\\s*1\", i]({south},{west},{north},{east});\n"
+        f"  relation[\"shop\"=\"supermarket\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        f"  node[\"operator\"~\"koba\", i]({south},{west},{north},{east});\n"
+        f"  way [\"operator\"~\"koba\", i]({south},{west},{north},{east});\n"
+        f"  relation[\"operator\"~\"koba\", i]({south},{west},{north},{east});\n"
+        f"  node[\"shop\"=\"convenience\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        f"  way [\"shop\"=\"convenience\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        f"  relation[\"shop\"=\"convenience\"][\"name\"~\"\\bd\\s*1\\b\", i]({south},{west},{north},{east});\n"
+        ");\n"
+        "out center tags;\n"
+    )
 
 
 def _session() -> requests.Session:
@@ -252,12 +270,36 @@ def main():
     ap.add_argument("--endpoint", action="append", default=[], help="Custom Overpass endpoint(s); can be used multiple times")
     ap.add_argument("--timeout", type=int, default=120, help="HTTP timeout seconds per request")
     ap.add_argument("--minimal", action="store_true", help="Write only name, latitude, longitude to CSV")
+    ap.add_argument("--tile", action="store_true", help="Use tiled bbox queries instead of country area")
+    ap.add_argument("--lat-step", type=float, default=2.0, help="Tile latitude step (degrees)")
+    ap.add_argument("--lng-step", type=float, default=2.0, help="Tile longitude step (degrees)")
+    ap.add_argument("--min-lat", type=float, default=-4.5, help="Min latitude for Colombia bbox")
+    ap.add_argument("--max-lat", type=float, default=13.0, help="Max latitude for Colombia bbox")
+    ap.add_argument("--min-lng", type=float, default=-79.5, help="Min longitude for Colombia bbox")
+    ap.add_argument("--max-lng", type=float, default=-66.5, help="Max longitude for Colombia bbox")
     args = ap.parse_args()
 
-    query = build_overpass_query()
     endpoints = args.endpoint if args.endpoint else None
-    osm = fetch_overpass(query, endpoints=endpoints, timeout_s=args.timeout)
-    rows = extract_elements(osm)
+    rows: List[Dict] = []
+    if args.tile:
+        lat = args.min_lat
+        while lat < args.max_lat:
+            lng = args.min_lng
+            north = min(lat + args.lat_step, args.max_lat)
+            while lng < args.max_lng:
+                east = min(lng + args.lng_step, args.max_lng)
+                q = build_overpass_query_bbox(lat, lng, north, east)
+                try:
+                    osm = fetch_overpass(q, endpoints=endpoints, timeout_s=args.timeout)
+                    rows.extend(extract_elements(osm))
+                except Exception:
+                    pass
+                lng = east
+            lat = north
+    else:
+        query = build_overpass_query()
+        osm = fetch_overpass(query, endpoints=endpoints, timeout_s=args.timeout)
+        rows = extract_elements(osm)
 
     # Simple sanity filter: keep only entries with a coordinate and D1 in name
     filtered: List[Dict] = []
