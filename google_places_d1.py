@@ -148,6 +148,8 @@ def main():
     ap.add_argument("--min-lng", type=float, default=-79.5, help="Min longitude for Colombia bbox")
     ap.add_argument("--max-lng", type=float, default=-66.5, help="Max longitude for Colombia bbox")
     ap.add_argument("--max-results", type=int, default=10000, help="Stop after collecting this many unique places")
+    ap.add_argument("--country-name", default="colombia", help="Keep only results whose plus_code/vicinity mentions this country (case-insensitive)")
+    ap.add_argument("--strict-country", action="store_true", help="Drop results without country match even if plus_code/vicinity missing")
     ap.add_argument("--name-token", action="append", default=[], help="Name must contain at least one of these case-insensitive tokens; repeatable")
     args = ap.parse_args()
 
@@ -184,6 +186,19 @@ def main():
                 name_l = name.lower()
                 if name_tokens and not any(tok in name_l for tok in name_tokens):
                     continue
+                # Country filter via plus_code or vicinity when available
+                cn = (args.country_name or "").strip().lower()
+                if cn:
+                    plus_code = ((res.get("plus_code") or {}).get("compound_code") or "").strip().lower()
+                    vicinity = (res.get("vicinity") or "").strip().lower()
+                    has_country = (cn in plus_code) or (cn in vicinity)
+                    if args.strict_country:
+                        if not has_country:
+                            continue
+                    else:
+                        # If we have any location text but it doesn't mention country, skip; otherwise keep
+                        if (plus_code or vicinity) and not has_country:
+                            continue
                 if pid in seen_place_ids:
                     continue
                 seen_place_ids.add(pid)
