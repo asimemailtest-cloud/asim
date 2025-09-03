@@ -10,10 +10,11 @@ Usage:
   export GOOGLE_MAPS_API_KEY=your_key
   python3 google_places_d1.py --output /workspace/output/d1_google_places.csv
 
-Notes:
-- Uses a lat/lon grid over Colombia and Nearby Search with keyword "d1" and
-  type "supermarket". Results are de-duplicated by place_id.
-- Respects next_page_token delay and simple rate limiting.
+Tips to increase coverage:
+- Provide multiple keywords (repeat --keyword): "d1", "tiendas d1", "almacenes d1", "d-1"
+- Search multiple place types (repeat --type): supermarket, grocery_or_supermarket, store, convenience_store
+- Reduce grid steps: --lat-step 0.3 --lng-step 0.3 (more overlap)
+- Use rankby distance (denser in cities): --use-rankby-distance (drops radius)
 """
 
 import argparse
@@ -22,6 +23,7 @@ import os
 import sys
 import time
 from typing import Dict, Iterable, List, Optional, Set, Tuple
+from itertools import product
 
 import requests
 
@@ -66,15 +68,19 @@ def nearby_search(
     place_type: str,
     language: str = "es",
     rate_limit_s: float = 0.3,
+    rankby: Optional[str] = None,
 ) -> Iterable[Dict]:
     params = {
         "key": api_key,
         "location": f"{location[0]},{location[1]}",
-        "radius": radius_m,
         "keyword": keyword,
         "type": place_type,
         "language": language,
     }
+    if rankby == "distance":
+        params["rankby"] = "distance"
+    else:
+        params["radius"] = radius_m
     session = requests.Session()
 
     next_page_token: Optional[str] = None
@@ -98,7 +104,7 @@ def nearby_search(
                 break
         elif status == "OVER_QUERY_LIMIT":
             # backoff
-            time.sleep(2.0)
+            time.sleep(3.0)
             continue
         else:
             # Other errors; stop this tile
@@ -134,13 +140,15 @@ def main():
     ap.add_argument("--radius-m", type=int, default=50000, help="Nearby search radius in meters (max 50000)")
     ap.add_argument("--lat-step", type=float, default=1.0, help="Latitude grid step degrees")
     ap.add_argument("--lng-step", type=float, default=1.0, help="Longitude grid step degrees")
-    ap.add_argument("--keyword", default="d1", help="Search keyword")
-    ap.add_argument("--type", dest="place_type", default="supermarket", help="Place type for search (e.g., supermarket)")
+    ap.add_argument("--keyword", action="append", default=[], help="Search keyword(s); repeat to add more")
+    ap.add_argument("--type", dest="place_type", action="append", default=[], help="Place type(s); repeat to add more")
+    ap.add_argument("--use-rankby-distance", action="store_true", help="Use rankby=distance (no radius) for denser urban coverage")
     ap.add_argument("--min-lat", type=float, default=-4.5, help="Min latitude for Colombia bbox")
     ap.add_argument("--max-lat", type=float, default=13.0, help="Max latitude for Colombia bbox")
     ap.add_argument("--min-lng", type=float, default=-79.5, help="Min longitude for Colombia bbox")
     ap.add_argument("--max-lng", type=float, default=-66.5, help="Max longitude for Colombia bbox")
     ap.add_argument("--max-results", type=int, default=10000, help="Stop after collecting this many unique places")
+    ap.add_argument("--name-token", action="append", default=[], help="Name must contain at least one of these case-insensitive tokens; repeatable")
     args = ap.parse_args()
 
     api_key = get_api_key(args.api_key)
@@ -149,32 +157,41 @@ def main():
     seen_place_ids: Set[str] = set()
     collected: List[Tuple[str, float, float]] = []
 
+    # Defaults for broader coverage
+    keywords: List[str] = args.keyword or ["tiendas d1", "d1", "d-1", "almacenes d1"]
+    place_types: List[str] = args.place_type or [
+        "grocery_or_supermarket", "supermarket", "store", "convenience_store"
+    ]
+    name_tokens: List[str] = [t.lower() for t in (args.name_token or ["d1"]) if t]
+
     for lat, lng in generate_grid(
         args.min_lat, args.max_lat, args.min_lng, args.max_lng, args.lat_step, args.lng_step
     ):
-        for res in nearby_search(
-            api_key=api_key,
-            location=(lat, lng),
-            radius_m=radius_m,
-            keyword=args.keyword,
-            place_type=args.place_type,
-        ):
-            rec = extract_record(res)
-            if not rec:
-                continue
-            name, plat, plng, pid = rec
-            # Filter to likely D1 stores by name
-            name_l = name.lower()
-            if "d1" not in name_l:
-                continue
-            if pid in seen_place_ids:
-                continue
-            seen_place_ids.add(pid)
-            collected.append((name, plat, plng))
-            if len(collected) >= args.max_results:
-                write_csv(args.output, collected)
-                print(f"Wrote {len(collected)} rows to {args.output}")
-                return
+        for kw, typ in product(keywords, place_types):
+            for res in nearby_search(
+                api_key=api_key,
+                location=(lat, lng),
+                radius_m=radius_m,
+                keyword=kw,
+                place_type=typ,
+                rankby=("distance" if args.use-rankby-distance else None),
+            ):
+                rec = extract_record(res)
+                if not rec:
+                    continue
+                name, plat, plng, pid = rec
+                # Name token filter
+                name_l = name.lower()
+                if name_tokens and not any(tok in name_l for tok in name_tokens):
+                    continue
+                if pid in seen_place_ids:
+                    continue
+                seen_place_ids.add(pid)
+                collected.append((name, plat, plng))
+                if len(collected) >= args.max_results:
+                    write_csv(args.output, collected)
+                    print(f"Wrote {len(collected)} rows to {args.output}")
+                    return
 
     write_csv(args.output, collected)
     print(f"Wrote {len(collected)} rows to {args.output}")
