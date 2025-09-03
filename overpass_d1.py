@@ -44,13 +44,23 @@ def build_overpass_query() -> str:
     [out:json][timeout:300];
     area["ISO3166-1"="CO"][admin_level=2]->.co;
     (
-      node["shop"="supermarket"]["brand"~"(?i)^tiendas?\s*d\s*1$"](area.co);
-      node["shop"="supermarket"]["name"~"(?i)^tiendas?\s*d\s*1$"](area.co);
-      node["brand"~"(?i)^tiendas?\s*d\s*1$"]["name"~"(?i)d\s*1"](area.co);
-      way ["shop"="supermarket"]["brand"~"(?i)^tiendas?\s*d\s*1$"](area.co);
-      way ["shop"="supermarket"]["name"~"(?i)^tiendas?\s*d\s*1$"](area.co);
-      relation["shop"="supermarket"]["brand"~"(?i)^tiendas?\s*d\s*1$"](area.co);
-      relation["shop"="supermarket"]["name"~"(?i)^tiendas?\s*d\s*1$"](area.co);
+      // Supermarkets with brand or name mentioning D1 (looser regex)
+      node["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
+      node["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
+      way ["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
+      way ["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
+      relation["shop"="supermarket"]["brand"~"(?i)d\s*1"](area.co);
+      relation["shop"="supermarket"]["name"~"(?i)\bd\s*1\b"](area.co);
+
+      // Some data might be tagged with operator
+      node["operator"~"(?i)koba"](area.co);
+      way ["operator"~"(?i)koba"](area.co);
+      relation["operator"~"(?i)koba"](area.co);
+
+      // Occasionally tagged as convenience instead of supermarket
+      node["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
+      way ["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
+      relation["shop"="convenience"]["name"~"(?i)\bd\s*1\b"](area.co);
     );
     out center tags;
     """
