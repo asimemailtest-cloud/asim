@@ -27,6 +27,7 @@ osm_id,osm_type,name,brand,operator,addr_full,addr_street,addr_housenumber,addr_
 4571192690,node,Tiendas D1,,,,,,,,,Mo-Su 07:00-20:00,,,3.0071491,-76.4823058
 4580151589,node,D1,D1,,,,,,,,,,https://d1.com.co/,4.7498498,-74.0734081
 4596950198,node,Tienda D1,,,,,,,,,,,,6.163919,-75.622271
+4623922192,node,Tiendas D1 La 92,,Koba International Group,,Calle 92,50D-31,Medellín,,005004,Mo-Su 08:00-21:00,,https://domicilios.tiendasd1.com/?utm_source=google&utm_medium=sem&utm_campaign=domicilios&utm_term=clicks_cpc&utm_content=sem-seasonal&gad_source=1&gclid=Cj0KCQiAwbitBhDIARIsABfFYIKCxAMWbOVPD0KYehv4F1rhC0a7P8ZfBT8jHsfGCXzUsLq-gvjd6tQaApo6EALw_wcB,6.2833532,-75.5604981
 4624673789,node,D1,,,,,,,,,Mo-Su 08:00-21:00,,,6.210062,-75.5763717
 4635874890,node,D1,D1,,,Calle 12,17-116,,,,,,,4.7957236,-75.6912532
 4636534723,node,D1,D1,,,,,,,,,,https://d1.com.co/,4.5946928,-74.1022631
@@ -474,6 +475,7 @@ Tiendas D1",4.7375184,-74.0766204
 330299608,way,D1,D1,,,,,,,,,,,4.531602,-75.692025
 330998260,way,D1,D1,,,,,,,,,,,4.5391839,-75.6797397
 340362134,way,D1,D1,,,,,,,,,,,4.5482831,-75.6758707
+374040555,way,Supermercado D1 San Lucas,,KOBA Colombia S.A.S.,,Carrera 22,18A Sur - 135,Medellín,,050022,Mo-Sa 08:00-21:00; Su 09:00-20:00,,http://www.tiendasd1.com,6.180087,-75.5614568
 377765989,way,D1,D1,,,,,,,,,,,6.2487673,-75.6085715
 387033316,way,D1,,,,,,,,,,,,3.4212209,-76.552769
 404727647,way,Tiendas D1,D1,,,,,,,,,,,4.6758964,-74.1440815

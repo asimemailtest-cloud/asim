@@ -20,7 +20,7 @@ area["ISO3166-1"="CO"][admin_level=2]->.co;
 (
   nwr["name"~"^(Tiendas? )?D1$|^D1$|^TIENDA D1$", i](area.co);
   nwr["brand"~"D1", i](area.co);
-  nwr["operator"~"D1", i](area.co);
+  nwr["operator"~"D1|KOBA", i](area.co);
 );
 out center tags;
 """

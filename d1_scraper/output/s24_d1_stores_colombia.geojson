@@ -1,0 +1,311 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6089512,
+          7.8791359
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Carrera 76 Y Calle 102 C",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/carrera-76-y-calle-102-c-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6332222,
+          7.880276
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 100 #94-76",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/cra-100-94-76-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6350012,
+          7.8800806
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 103 #97a-28",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/cra-103-97a-28-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6629019,
+          4.5446008
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Av. Bolívar #1-23",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/av-bolivar-1-23-6/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6641801,
+          4.5413016
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Av. Bolívar #4-4",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/av-bolivar-4-4-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6724747,
+          4.5419532
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 11 #21a-55",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-11-21a-55-7/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6719624,
+          4.537726
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 14 #18-05",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-14-18-05-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6794238,
+          4.5391999
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 21 #25-75",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-21-25-75-9/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6901266,
+          4.5427478
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 22 #40-57",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-22-40-57-8/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6920561,
+          4.5316696
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 30 #31 - 35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-30-31---35-12/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6825084,
+          4.5265885
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 36 #18-35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-36-18-35-14/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.7008026,
+          4.5199227
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 50 #37-19",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-50-37-19-11/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6736984,
+          4.5312399
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 13 #22-41",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-13-22-41-3/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6721787,
+          4.5338423
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 14 #18n-50 ",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-14-18n-50-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6689957,
+          4.5373242
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra 15 #11-35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-15-11-35-10/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6670409,
+          4.5418713
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 18 #5-9",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-18-5-9-13/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6659964,
+          4.5443425
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 19 #1-5 ",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-19-1-5-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6520829,
+          4.5524997
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 6 #19n - 75",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-6-19n---75-1/"
+      }
+    }
+  ]
+}

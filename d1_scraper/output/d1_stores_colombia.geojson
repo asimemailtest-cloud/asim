@@ -734,6 +734,32 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -75.5604981,
+          6.2833532
+        ]
+      },
+      "properties": {
+        "osm_id": 4623922192,
+        "osm_type": "node",
+        "name": "Tiendas D1 La 92",
+        "brand": null,
+        "operator": "Koba International Group",
+        "addr_full": null,
+        "addr_street": "Calle 92",
+        "addr_housenumber": "50D-31",
+        "addr_city": "Medellín",
+        "addr_state": null,
+        "addr_postcode": "005004",
+        "opening_hours": "Mo-Su 08:00-21:00",
+        "phone": null,
+        "website": "https://domicilios.tiendasd1.com/?utm_source=google&utm_medium=sem&utm_campaign=domicilios&utm_term=clicks_cpc&utm_content=sem-seasonal&gad_source=1&gclid=Cj0KCQiAwbitBhDIARIsABfFYIKCxAMWbOVPD0KYehv4F1rhC0a7P8ZfBT8jHsfGCXzUsLq-gvjd6tQaApo6EALw_wcB"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -75.5763717,
           6.210062
         ]
@@ -12323,6 +12349,32 @@
         "opening_hours": null,
         "phone": null,
         "website": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5614568,
+          6.180087
+        ]
+      },
+      "properties": {
+        "osm_id": 374040555,
+        "osm_type": "way",
+        "name": "Supermercado D1 San Lucas",
+        "brand": null,
+        "operator": "KOBA Colombia S.A.S.",
+        "addr_full": null,
+        "addr_street": "Carrera 22",
+        "addr_housenumber": "18A Sur - 135",
+        "addr_city": "Medellín",
+        "addr_state": null,
+        "addr_postcode": "050022",
+        "opening_hours": "Mo-Sa 08:00-21:00; Su 09:00-20:00",
+        "phone": null,
+        "website": "http://www.tiendasd1.com"
       }
     },
     {
