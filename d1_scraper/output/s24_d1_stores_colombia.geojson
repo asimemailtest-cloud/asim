@@ -1,0 +1,1433 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6332222,
+          7.880276
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 100 #94-76",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/cra-100-94-76-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6350012,
+          7.8800806
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 103 #97a-28",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/cra-103-97a-28-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6089512,
+          7.8791359
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Carrera 76 Y Calle 102 C",
+        "city": "Apartadó",
+        "page_url": "https://www.sucursales24.com.co/apartado/tiendas-d1/carrera-76-y-calle-102-c-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6920561,
+          4.5316696
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 30 #31 - 35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-30-31---35-12/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6719624,
+          4.537726
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 14 #18-05",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-14-18-05-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6825084,
+          4.5265885
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 36 #18-35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-36-18-35-14/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6901266,
+          4.5427478
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 22 #40-57",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-22-40-57-8/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.7008026,
+          4.5199227
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 50 #37-19",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-50-37-19-11/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6641801,
+          4.5413016
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Av. Bolívar #4-4",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/av-bolivar-4-4-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6629019,
+          4.5446008
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Av. Bolívar #1-23",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/av-bolivar-1-23-6/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6794238,
+          4.5391999
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 21 #25-75",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-21-25-75-9/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6724747,
+          4.5419532
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 11 #21a-55",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cl-11-21a-55-7/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6736984,
+          4.5312399
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 13 #22-41",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-13-22-41-3/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6659964,
+          4.5443425
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 19 #1-5 ",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-19-1-5-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6520829,
+          4.5524997
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 6 #19n - 75",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-6-19n---75-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8346864,
+          7.0412772
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 37 #62-89",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/cl-37-62-89-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6670409,
+          4.5418713
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 18 #5-9",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-18-5-9-13/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8593921,
+          7.0641356
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 54 #18-2",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/cl-54-18-2-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6721787,
+          4.5338423
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 14 #18n-50 ",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-14-18n-50-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8583039,
+          7.0614779
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 19 #51-61",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/cra-19-51-61-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8256111,
+          7.0515082
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 64 #44 B - 87",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/cra-64-44-b---87-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.6689957,
+          4.5373242
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra 15 #11-35",
+        "city": "Armenia",
+        "page_url": "https://www.sucursales24.com.co/armenia/tiendas-d1/cra-15-11-35-10/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8539178,
+          7.076797
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 72 #21-90",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/cl-72-21-90-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8333145,
+          7.0662086
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Dg. 59 #41-19 ",
+        "city": "Barrancabermeja",
+        "page_url": "https://www.sucursales24.com.co/barrancabermeja/tiendas-d1/dg-59-41-19-3/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8078439,
+          10.937334
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Calle 50c #3-35",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/calle-50c-3-35-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7738138,
+          10.952951
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 17 #13-35",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-17-13-35-14/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8665106,
+          11.0284477
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 14 #16-27",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-14-16-27-18/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.781652,
+          10.982598
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 40 #43-84",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-40-43-84-6/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7995238,
+          10.9393108
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 45 #4-123",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-45-4-123-8/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8218723,
+          10.9870735
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 80b #39-39",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-80b-39-39-7/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8258567,
+          11.0070467
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 93 #49c-42",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-93-49c-42-13/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8028465,
+          10.9683139
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra 21b #58-71",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-21b-58-71-19/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8108131,
+          10.990203
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 74 #41-6",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-74-41-6-17/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7958157,
+          10.9840301
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 41 #57-34",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-41-57-34-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7996211,
+          10.9512249
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 45 #10-65",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cl-45-10-65-15/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8145916,
+          10.9943053
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 42f #79-38",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-42f-79-38-12/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8259639,
+          11.0010959
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 43 #90-60",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-43-90-60-11/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8208962,
+          11.0028098
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 47 #85-13",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-47-85-13-9/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8151149,
+          11.0040815
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 51 #82-42",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-51-82-42-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7844828,
+          10.9914856
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 52 #46-64",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-52-46-64-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8086049,
+          11.0118074
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 64 #81-62",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-64-81-62-10/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8179631,
+          10.9549438
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 9 #110-187",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-9-110-187-3/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5501676,
+          6.3368669
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Av. 42b #51-51",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/av-42b-51-51-13/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.7945178,
+          10.9459414
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 8 #38b-51",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-8-38b-51-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.8278155,
+          11.038551
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra 82 #107 - 40",
+        "city": "Barranquilla",
+        "page_url": "https://www.sucursales24.com.co/barranquilla/tiendas-d1/cra-82-107---40-16/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5646737,
+          6.3419578
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Carrera 59 #27b-301",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/carrera-59-27b-301-7/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5645353,
+          6.3352801
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 52c #57-38",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-52c-57-38-8/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5559612,
+          6.3378939
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 54 #46-63",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-54-46-63-6/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5616934,
+          6.3401129
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 58 #54-61",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-58-54-61-10/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5616934,
+          6.3401129
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 58 #54-61",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-58-54-61-9/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5636023,
+          6.3458647
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 64 #103-5",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-64-103-5-14/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5670848,
+          6.3470089
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 65 #64-32",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-65-64-32-16/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5652813,
+          6.3414483
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl. 58 #59-66",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cl-58-59-66-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5685232,
+          6.348743
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 65a #68-31",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-65a-68-31-18/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5547947,
+          6.3318357
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 47 #45-15",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-47-45-15-15/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5590313,
+          6.3380415
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 50 #54-59",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-50-54-59-12/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5679899,
+          6.3384733
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 63 #54-2",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-63-54-2-19/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5720306,
+          6.3114983
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 62 #21a-41",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-62-21a-41-3/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5615762,
+          6.3331059
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 53a #48-31",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-53a-48-31-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.558556,
+          6.3151304
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 51 #25-23",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-51-25-23-11/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5801459,
+          6.311415
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cra. 74 #20d-74",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/cra-74-20d-74-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5409523,
+          6.3383361
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Dg. 50a #32-200",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/dg-50a-32-200-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5409754,
+          6.33839
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Dg. 50a #37 - 1",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/dg-50a-37---1-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5322997,
+          6.3441215
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Dg. 52 #20 - 120",
+        "city": "Bello",
+        "page_url": "https://www.sucursales24.com.co/bello/tiendas-d1/dg-52-20---120-17/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0972005,
+          4.6372852
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Ac 24 #48 - 64",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/ac-24-48---64-9/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1041044,
+          4.6989982
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Ak 86 #74 A - 26",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/ak-86-74-a---26-13/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0583905,
+          4.7137143
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 128 A #51 - 52",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-128-a-51---52-14/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0748335,
+          4.698587
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 116 #70 D - 87",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-116-70-d---87-4/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0258199,
+          4.7378739
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 162 #7 F - 84",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-162-7-f---84-1/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0992532,
+          4.6044733
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Ak 30 #4a-58",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/ak-30-4a-58-7/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.03438,
+          4.764923
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 188 #13 - 15",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-188-13---15-0/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1439065,
+          4.6169035
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 36 Sur #72 M - 51",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-36-sur-72-m---51-6/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0941003,
+          4.5716214
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 24 Sur #7 - 32",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-24-sur-7---32-5/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1663153,
+          4.5866888
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 64 Sur #71 F - 77",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-64-sur-71-f---77-10/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1254164,
+          4.6978846
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 64 F #105 - 35",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-64-f-105---35-12/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0783598,
+          4.6667463
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 68 #53 - 58",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-68-53---58-16/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0854824,
+          4.677794
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cl 72 A #67 - 78",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cl-72-a-67---78-18/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1373302,
+          4.6363851
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 72 #7 F - 35",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-72-7-f---35-8/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1137498,
+          4.7406591
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 129 #132 - 30",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-129-132---30-2/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.042886,
+          4.697654
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 15 #118 - 34",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-15-118---34-15/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0584049,
+          4.6887166
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 46 #129 - 31",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-46-129---31-17/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1304947,
+          4.6547504
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 78 #17 - 57",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-78-17---57-11/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0302346,
+          4.7393741
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 8 G #162 - 40",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-8-g-162---40-19/"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0923817,
+          4.7175906
+        ]
+      },
+      "properties": {
+        "source": "sucursales24",
+        "name": "Tiendas D1",
+        "street_address": "Cr 91 #127 - 63",
+        "city": "Bogotá",
+        "page_url": "https://www.sucursales24.com.co/bogota/tiendas-d1/cr-91-127---63-3/"
+      }
+    }
+  ]
+}
