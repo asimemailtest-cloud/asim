@@ -4,12 +4,14 @@ import csv
 import json
 import pathlib
 import re
-from html.parser import HTMLParser
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from html.parser import HTMLParser
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 BASE = "https://www.sucursales24.com.co"
@@ -17,7 +19,7 @@ INDEX_URL = f"{BASE}/tiendas-d1/todos/"
 USER_AGENT = "d1-scraper-s24/1.0 (contact: local)"
 
 REQUEST_TIMEOUT_SECS = 45
-DELAY_BETWEEN_REQUESTS_SECS = 0.35
+DELAY_BETWEEN_REQUESTS_SECS = 0.2
 
 CITY_LINK_RE = re.compile(r"href=\"(https?://www\.sucursales24\.com\.co/[^/]+/tiendas-d1/)\"", re.I)
 STORE_LINK_RE = re.compile(r"<a[^>]+href=\"(https?://www\\.sucursales24\\.com\\.co/[^/]+/tiendas-d1/[^\"]+/)\"", re.I)
@@ -30,6 +32,25 @@ def http_get(url: str) -> str:
         data = resp.read()
     time.sleep(DELAY_BETWEEN_REQUESTS_SECS)
     return data.decode("utf-8", errors="replace")
+
+
+def http_get_cached(url: str, cache_dir: pathlib.Path | None) -> str:
+    if cache_dir is None:
+        return http_get(url)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    key = hashlib.md5(url.encode("utf-8")).hexdigest() + ".html"
+    path = cache_dir / key
+    if path.exists():
+        try:
+            return path.read_text(encoding="utf-8")
+        except Exception:
+            pass
+    html = http_get(url)
+    try:
+        path.write_text(html, encoding="utf-8")
+    except Exception:
+        pass
+    return html
 
 
 def extract_city_links(html: str) -> List[str]:
@@ -157,16 +178,19 @@ def main() -> None:
     parser.add_argument("--outdir", default="./output", help="Directory to write outputs")
     parser.add_argument("--max_cities", type=int, default=0, help="Optional limit on number of cities to crawl")
     parser.add_argument("--max_stores_per_city", type=int, default=0, help="Optional limit of stores per city")
+    parser.add_argument("--workers", type=int, default=8, help="Concurrent workers for fetching")
     args = parser.parse_args()
 
     outdir = pathlib.Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
+    cache_root = outdir.parent / "cache" / "s24"
+    cache_root.mkdir(parents=True, exist_ok=True)
 
     print("Fetching index:", INDEX_URL)
     # Fetch the index; if it fails, attempt to reuse locally saved copy if present
     index_html: Optional[str] = None
     try:
-        index_html = http_get(INDEX_URL)
+        index_html = http_get_cached(INDEX_URL, cache_root)
     except Exception as e:
         print("Failed to fetch index:", e, file=sys.stderr)
         try:
@@ -183,38 +207,68 @@ def main() -> None:
     seen_store_urls: Set[str] = set()
     rows: List[Dict[str, Any]] = []
 
-    for city_idx, city_url in enumerate(city_links, start=1):
-        city_html: Optional[str] = None
+    def fetch_city(url: str) -> Tuple[str, List[str]]:
         try:
-            city_html = http_get(city_url)
+            html = http_get_cached(url, cache_root)
         except Exception as e:
-            print(f"Failed city {city_url}: {e}", file=sys.stderr)
             # Try to read a local sample if exists (for testing)
-            slug = city_url.strip("/").split("/")[-2]
+            slug = url.strip("/").split("/")[-2]
             sample = outdir.parent / "temp" / f"s24-{slug}.html"
             if sample.exists():
-                city_html = sample.read_text(encoding="utf-8")
-                print(f"Using local cached city HTML for {slug}")
+                html = sample.read_text(encoding="utf-8")
             else:
-                continue
-        store_links = extract_store_links(city_html)
-        if args.max_stores_per_city and args.max_stores_per_city > 0:
-            store_links = store_links[: args.max_stores_per_city]
-        print(f"[{city_idx}/{len(city_links)}] {city_url} -> {len(store_links)} stores")
+                return (url, [])
+        store_links = extract_store_links(html)
+        return (url, store_links)
 
-        for store_url in store_links:
-            if store_url in seen_store_urls:
-                continue
-            seen_store_urls.add(store_url)
+    print(f"Fetching {len(city_links)} city pages with {args.workers} workers...")
+    city_to_storelinks: Dict[str, List[str]] = {}
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+        futures = {pool.submit(fetch_city, cu): cu for cu in city_links}
+        idx = 0
+        for fut in as_completed(futures):
+            idx += 1
+            cu = futures[fut]
             try:
-                store_html = http_get(store_url)
-            except Exception as e:
-                print(f"  Store failed {store_url}: {e}", file=sys.stderr)
-                continue
-            data = extract_store_fields(store_url, store_html)
-            if not data:
-                continue
-            rows.append(data)
+                url, store_links = fut.result()
+            except Exception:
+                url, store_links = (cu, [])
+            if args.max_stores_per_city and args.max_stores_per_city > 0:
+                store_links = store_links[: args.max_stores_per_city]
+            city_to_storelinks[url] = store_links
+            print(f"[{idx}/{len(city_links)}] {url} -> {len(store_links)} stores")
+
+    # Flatten and unique store URLs
+    all_store_urls: List[str] = []
+    for slist in city_to_storelinks.values():
+        all_store_urls.extend(slist)
+    all_store_urls = [u for u in all_store_urls if u not in seen_store_urls]
+    all_store_urls = sorted(set(all_store_urls))
+
+    print(f"Fetching {len(all_store_urls)} store pages with {args.workers} workers...")
+
+    def fetch_store(url: str) -> Optional[Dict[str, Any]]:
+        try:
+            html = http_get_cached(url, cache_root)
+        except Exception:
+            return None
+        data = extract_store_fields(url, html)
+        return data
+
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+        futures = {pool.submit(fetch_store, su): su for su in all_store_urls}
+        idx = 0
+        for fut in as_completed(futures):
+            idx += 1
+            su = futures[fut]
+            try:
+                rec = fut.result()
+            except Exception:
+                rec = None
+            if rec:
+                rows.append(rec)
+            if idx % 50 == 0:
+                print(f"  Processed {idx}/{len(all_store_urls)} store pages")
 
     # Deduplicate by page_url
     unique_rows: Dict[str, Dict[str, Any]] = {r["page_url"]: r for r in rows}
